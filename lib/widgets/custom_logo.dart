@@ -2,6 +2,11 @@
 import 'package:flutter/material.dart';
 
 class CustomLogo extends StatelessWidget {
+
+  final String title;
+
+  const CustomLogo({ @required this.title}) : super();
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -17,7 +22,7 @@ class CustomLogo extends StatelessWidget {
               height: 16,
             ),
             Text(
-              'Chat',
+              title,
               style: TextStyle(fontSize: 30),
             )
           ],

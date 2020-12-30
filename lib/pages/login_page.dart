@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/pages/register_page.dart';
 import 'package:flutter_chat/widgets/custom_form_state.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
 import 'package:flutter_chat/widgets/login_register_feedback.dart';
@@ -19,9 +20,13 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomLogo(),
+                CustomLogo(title: 'Login',),
                 CustomFormState(),
-                LoginRegisterFeedback(),
+                LoginRegisterFeedback(
+                  placeholder: '¿No tienes cuenta?',
+                  routeToNavigate: RegisterPage.routeName,
+                  titleNavigationRoute: 'Crea una ahora!!',
+                ),
                 SizedBox(height: 8,),
                 TermsAndConditions()
               ],
