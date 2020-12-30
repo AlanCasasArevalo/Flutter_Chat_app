@@ -8,18 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: getDefaultRouteApplications(),
-        initialRoute: LoadingPage.routeName,
         routes: getApplications(),
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('Chat'),
-          ),
-          body: Center(
-            child: Container(
-              child: Text('PON_AQUI_CUALQUIER_COSA'),
-            ),
-          ),
-        )
     );
   }
 }
