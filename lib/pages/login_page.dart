@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/pages/register_page.dart';
-import 'package:flutter_chat/widgets/custom_form_state.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
+import 'package:flutter_chat/widgets/custom_raised_button.dart';
+import 'package:flutter_chat/widgets/custom_text_field.dart';
 import 'package:flutter_chat/widgets/login_register_feedback.dart';
 import 'package:flutter_chat/widgets/terms_and_conditions.dart';
 
@@ -21,7 +22,7 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomLogo(title: 'Login',),
-                CustomFormState(),
+                _LoginCustomFormState(),
                 LoginRegisterFeedback(
                   placeholder: '¿No tienes cuenta?',
                   routeToNavigate: RegisterPage.routeName,
@@ -33,6 +34,48 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LoginCustomFormState extends StatefulWidget {
+  @override
+  _FormStateState createState() => _FormStateState();
+}
+
+class _FormStateState extends State<_LoginCustomFormState> {
+  final TextEditingController _emailTextEditingController = TextEditingController();
+  final TextEditingController _passwordTextEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 40),
+      padding: EdgeInsets.symmetric(horizontal: 50),
+      child: Column(
+        children: [
+          CustomTextField(
+            icon: Icons.mail_outline,
+            isPassword: false,
+            placeholder: 'Email',
+            textInputType: TextInputType.emailAddress,
+            textEditingController: _emailTextEditingController,
+          ),
+          CustomTextField(
+            icon: Icons.lock,
+            isPassword: true,
+            placeholder: 'Password',
+            textInputType: TextInputType.text,
+            textEditingController: _passwordTextEditingController,
+          ),
+          CustomRaisedButton(
+            placeholder: 'Ingresar',
+            onPressed: () {
+              print('');
+            },
+          )
+        ],
       ),
     );
   }

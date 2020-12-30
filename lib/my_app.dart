@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat/pages/loading_pager.dart';
 import 'package:flutter_chat/routes/routes.dart';
 
 class MyApp extends StatelessWidget {
