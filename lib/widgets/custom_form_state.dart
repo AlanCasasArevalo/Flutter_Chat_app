@@ -1,4 +1,4 @@
-
+import 'package:flutter_chat/widgets/custom_raised_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/widgets/custom_text_field.dart';
 
@@ -8,7 +8,6 @@ class CustomFormState extends StatefulWidget {
 }
 
 class _FormStateState extends State<CustomFormState> {
-
   final TextEditingController _emailTextEditingController = TextEditingController();
   final TextEditingController _passwordTextEditingController = TextEditingController();
 
@@ -33,14 +32,14 @@ class _FormStateState extends State<CustomFormState> {
             textInputType: TextInputType.text,
             textEditingController: _passwordTextEditingController,
           ),
-          // TODO: Crear el boton
-          RaisedButton(onPressed: () {
-            print(_emailTextEditingController.text);
-          })
+          CustomRaisedButton(
+            placeholder: 'Ingresar',
+            onPressed: () {
+              print('');
+            },
+          )
         ],
       ),
     );
   }
 }
-
-
