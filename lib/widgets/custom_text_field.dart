@@ -2,9 +2,24 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  @override
+
+  final IconData icon;
+  final String placeholder;
+  final TextEditingController textEditingController;
+  final bool isPassword;
+  final TextInputType textInputType;
+
+  const CustomTextField({
+    this.icon,
+    this.placeholder,
+    this.textEditingController,
+    this.isPassword = false,
+    this.textInputType = TextInputType.text
+  }) : super();
+
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(top: 5, left: 5, bottom: 5, right: 20),
       decoration: BoxDecoration(
         boxShadow: [
@@ -18,14 +33,15 @@ class CustomTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child: TextField(
+        controller: textEditingController,
         autocorrect: false,
-        keyboardType: TextInputType.emailAddress,
-        // obscureText: true,
+        keyboardType: textInputType,
+        obscureText: isPassword,
         decoration: InputDecoration(
-            prefixIcon: Icon(Icons.mail_outline),
+            prefixIcon: Icon(icon),
             focusedBorder: InputBorder.none,
             border: InputBorder.none,
-            hintText: 'Texto'
+            hintText: placeholder
         ),
       ),
     );
