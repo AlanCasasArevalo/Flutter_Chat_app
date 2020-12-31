@@ -11,24 +11,12 @@ class ChatPage extends StatefulWidget {
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
 
-  List<ChatMessage> _messages = [
-    ChatMessage(uid: '123', message: 'Hola',),
-    ChatMessage(uid: '125', message: 'Hola',),
-    ChatMessage(uid: '133', message: 'Hola',),
-    ChatMessage(uid: '123', message: 'Hola',),
-    ChatMessage(uid: '23', message: 'Hola',),
-    ChatMessage(uid: '123', message: 'Hola',),
-    ChatMessage(uid: '23', message: 'Hola',),
-    ChatMessage(uid: '123', message: 'Hola',),
-    ChatMessage(uid: '23', message: 'Hola',),
-    ChatMessage(uid: '123', message: 'Hola',),
-    ChatMessage(uid: '23', message: 'Hola',),
-  ];
+  List<ChatMessage> _messages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +94,20 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   _handleSubmit(String value) {
+    if (value.trim().isEmpty) {
+      return;
+    }
+
     _focusNode.requestFocus();
     _textEditingController.clear();
 
-    final newMessage = ChatMessage(uid: '123', message: value,);
+    final newMessage = ChatMessage(
+      uid: '123',
+      message: value,
+      animationController: AnimationController(vsync: this, duration: Duration(milliseconds: 400)),
+    );
     _messages.insert(0, newMessage);
+    newMessage.animationController.forward();
 
     setState(() {
       _isEditing = false;
