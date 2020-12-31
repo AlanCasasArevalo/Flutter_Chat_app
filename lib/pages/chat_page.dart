@@ -140,4 +140,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       elevation: 2,
     );
   }
+
+  @override
+  void dispose() {
+    // TODO: Off del socket. Cerrar el chat
+
+    _messages.forEach((chatMessage) {
+      chatMessage.animationController.dispose();
+    });
+
+    super.dispose();
+  }
 }
