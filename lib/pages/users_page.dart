@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/models/user.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UsersPage extends StatefulWidget {
   static String routeName = 'users_page';
@@ -9,6 +10,9 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
+
+
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   final users = [
     User( online: false, email: 'alan@test.com', name: 'alan', uid: '1',),
@@ -36,14 +40,27 @@ class _UsersPageState extends State<UsersPage> {
           )
         ],
       ),
-      body: ListView.separated(
-        physics: BouncingScrollPhysics(),
-          itemBuilder: (BuildContext context, index ) {
-            return _userTile(users[index]);
-          },
-          separatorBuilder: (BuildContext context, index ) => Divider(),
-          itemCount: users.length
+      body: SmartRefresher(
+        enablePullDown: true,
+        onRefresh: _onRefresh,
+        header: WaterDropHeader(
+          complete: Icon(Icons.check, color: Colors.blue[400]),
+          waterDropColor: Colors.blue[400],
+        ),
+        controller: _refreshController,
+        child: _userBuildListView(),
       ),
+    );
+  }
+
+  ListView _userBuildListView() {
+    return ListView.separated(
+      physics: BouncingScrollPhysics(),
+        itemBuilder: (BuildContext context, index ) {
+          return _userTile(users[index]);
+        },
+        separatorBuilder: (BuildContext context, index ) => Divider(),
+        itemCount: users.length
     );
   }
 
@@ -64,5 +81,10 @@ class _UsersPageState extends State<UsersPage> {
               ),
             ),
           );
+  }
+
+  _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
   }
 }
