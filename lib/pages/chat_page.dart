@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/widgets/chat_message.dart';
 
 class ChatPage extends StatefulWidget {
   static String routeName = 'chat_page';
@@ -13,7 +14,21 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
-  bool _isEditing;
+  bool _isEditing = false;
+
+  List<ChatMessage> _messages = [
+    ChatMessage(uid: '123', message: 'Hola',),
+    ChatMessage(uid: '125', message: 'Hola',),
+    ChatMessage(uid: '133', message: 'Hola',),
+    ChatMessage(uid: '123', message: 'Hola',),
+    ChatMessage(uid: '23', message: 'Hola',),
+    ChatMessage(uid: '123', message: 'Hola',),
+    ChatMessage(uid: '23', message: 'Hola',),
+    ChatMessage(uid: '123', message: 'Hola',),
+    ChatMessage(uid: '23', message: 'Hola',),
+    ChatMessage(uid: '123', message: 'Hola',),
+    ChatMessage(uid: '23', message: 'Hola',),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +40,8 @@ class _ChatPageState extends State<ChatPage> {
               Flexible(
                   child: ListView.builder(
                 physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Text('$index hola');
-                },
+                itemCount: _messages.length,
+                itemBuilder: (context, index) => _messages[index],
                 reverse: true,
               )),
               Divider(
@@ -94,6 +108,10 @@ class _ChatPageState extends State<ChatPage> {
   _handleSubmit(String value) {
     _focusNode.requestFocus();
     _textEditingController.clear();
+
+    final newMessage = ChatMessage(uid: '123', message: value,);
+    _messages.insert(0, newMessage);
+
     setState(() {
       _isEditing = false;
     });
