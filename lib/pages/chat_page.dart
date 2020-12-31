@@ -11,9 +11,9 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
+  bool _isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +24,15 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               Flexible(
                   child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Text('$index hola');
-                    },
-                    reverse: true,
-                  )),
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Text('$index hola');
+                },
+                reverse: true,
+              )),
               Divider(
                 height: 2,
               ),
-              // TODO: Hacer la caja de texto bien
               Container(
                 child: _inputChat(),
               )
@@ -45,45 +44,59 @@ class _ChatPageState extends State<ChatPage> {
   Widget _inputChat() {
     return SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: [
-              Flexible(
-                  child: TextField(
-                    controller: _textEditingController,
-                    onSubmitted: _handleSubmit,
-                    onChanged: (String value) {
-                      // TODO: Cuando hay un valor a postear
-                    },
-                    decoration: InputDecoration.collapsed(
-                        hintText: 'Enviar mensaje'),
-                    focusNode: _focusNode,
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          Flexible(
+              child: TextField(
+            controller: _textEditingController,
+            onSubmitted: _handleSubmit,
+            onChanged: (String value) {
+              // _isEditing
+              setState(() {
+                value.trim().length > 1
+                    ? _isEditing = true
+                    : _isEditing = false;
+              });
+            },
+            decoration: InputDecoration.collapsed(hintText: 'Enviar mensaje'),
+            focusNode: _focusNode,
+          )),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            child: Platform.isIOS
+                ? CupertinoButton(
+                    child: Text('Enviar'),
+                    onPressed: _isEditing
+                        ? () => _handleSubmit(_textEditingController.text)
+                        : null,
                   )
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 5),
-                child: !Platform.isIOS
-                    ? CupertinoButton(
-                    child: Text('Enviar'), onPressed: () {}
-                )
-                    : Container(
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  child: IconButton(
-                    icon: Icon(Icons.send, color: Colors.blue[300],),
-                    onPressed: (){},
+                : Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    child: IconTheme(
+                      data: IconThemeData(color: Colors.blue[300]),
+                      child: IconButton(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        icon: Icon(Icons.send),
+                        onPressed: _isEditing
+                            ? () => _handleSubmit(_textEditingController.text)
+                            : null,
+                      ),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        )
-    );
+          )
+        ],
+      ),
+    ));
   }
 
-  _handleSubmit (String value) {
-    print(value);
+  _handleSubmit(String value) {
     _focusNode.requestFocus();
     _textEditingController.clear();
+    setState(() {
+      _isEditing = false;
+    });
   }
 
   AppBar _buildAppBar() {
