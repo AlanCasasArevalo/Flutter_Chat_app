@@ -4,6 +4,7 @@ import 'package:flutter_chat/common/show_alert.dart';
 import 'package:flutter_chat/pages/login_page.dart';
 import 'package:flutter_chat/pages/users_page.dart';
 import 'package:flutter_chat/providers/authentication_provider.dart';
+import 'package:flutter_chat/providers/socket_provider.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
 import 'package:flutter_chat/widgets/custom_raised_button.dart';
 import 'package:flutter_chat/widgets/custom_text_field.dart';
@@ -57,6 +58,7 @@ class _FormStateState extends State<_RegisterCustomFormState> {
   @override
   Widget build(BuildContext context) {
     final _authProvider = Provider.of<AuthenticationProvider>(context);
+    final _socketProvider = Provider.of<SocketProvider>(context);
 
     return Container(
       margin: EdgeInsets.only(top: 40),
@@ -97,7 +99,7 @@ class _FormStateState extends State<_RegisterCustomFormState> {
               );
 
               if (successRegister == true) {
-                // TODO: Conectar a nuestro socket server
+                _socketProvider.connect();
                 Navigator.pushReplacementNamed(context, UsersPage.routeName);
               } else {
                 showAlert(context, Constants.registerErrorTitle, successRegister);

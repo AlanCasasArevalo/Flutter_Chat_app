@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/providers/socket_provider.dart';
 import 'package:flutter_chat/widgets/chat_message.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   static String routeName = 'chat_page';
@@ -143,12 +145,13 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: Off del socket. Cerrar el chat
+    final _socketProvider = Provider.of<SocketProvider>(context);
 
     _messages.forEach((chatMessage) {
       chatMessage.animationController.dispose();
     });
 
+    _socketProvider.disconnect();
     super.dispose();
   }
 }
