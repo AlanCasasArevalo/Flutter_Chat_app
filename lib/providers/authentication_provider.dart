@@ -20,13 +20,13 @@ class AuthenticationProvider with ChangeNotifier {
   }
 
   // Getter de tokens
-  static Future<String> getToken () async {
+  static Future<String> getToken() async {
     final _storage = new FlutterSecureStorage();
     final token = await _storage.read(key: Environments.tokenKey);
     return token;
   }
 
-  static Future<void> deleteToken () async {
+  static Future<void> deleteToken() async {
     final _storage = new FlutterSecureStorage();
     await _storage.delete(key: Environments.tokenKey);
   }
@@ -51,11 +51,34 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-  Future _saveToken (String token) async {
+  Future register(String name, String email, String password) async {
+    this.authenticating = true;
+
+    final loginBody = {'name': name, 'email': email, 'password': password};
+
+    final response = await http.post('${Environments.baseURL}login/register',
+        body: jsonEncode(loginBody),
+        headers: {'Content-Type': 'application/json'});
+
+    this.authenticating = false;
+    if (response.statusCode > 199 && response.statusCode < 299) {
+      final loginResponse = loginModelResponseFromJson(response.body);
+      this.user = loginResponse.user;
+      await this._saveToken(loginResponse.token);
+      return true;
+    } else {
+      final responseErrors = jsonDecode(response.body);
+      if (responseErrors['errors'] != null) {
+        return 'Error revise sus credenciales, email o password';
+      }
+    }
+  }
+
+  Future _saveToken(String token) async {
     return await _storage.write(key: Environments.tokenKey, value: token);
   }
 
-  Future _logout () async {
+  Future _logout() async {
     await _storage.delete(key: Environments.tokenKey);
   }
 }

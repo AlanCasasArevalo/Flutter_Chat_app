@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/common/constants.dart';
 import 'package:flutter_chat/common/show_alert.dart';
 import 'package:flutter_chat/pages/register_page.dart';
 import 'package:flutter_chat/pages/users_page.dart';
@@ -26,13 +27,13 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomLogo(
-                  title: 'Login',
+                  title: Constants.loginPageTitle,
                 ),
                 _LoginCustomFormState(),
                 LoginRegisterFeedback(
-                  placeholder: '¿No tienes cuenta?',
+                  placeholder: Constants.loginPagePlaceholder,
                   routeToNavigate: RegisterPage.routeName,
-                  titleNavigationRoute: 'Crea una ahora!!',
+                  titleNavigationRoute: Constants.loginPageNavigationRoute,
                 ),
                 SizedBox(
                   height: 8,
@@ -70,19 +71,19 @@ class _FormStateState extends State<_LoginCustomFormState> {
           CustomTextField(
             icon: Icons.mail_outline,
             isPassword: false,
-            placeholder: 'Email',
+            placeholder: Constants.emailPlaceholder,
             textInputType: TextInputType.emailAddress,
             textEditingController: _emailTextEditingController,
           ),
           CustomTextField(
             icon: Icons.lock,
             isPassword: true,
-            placeholder: 'Password',
+            placeholder: Constants.passwordPlaceholder,
             textInputType: TextInputType.text,
             textEditingController: _passwordTextEditingController,
           ),
           CustomRaisedButton(
-            placeholder: 'Ingresar',
+            placeholder: Constants.loginButtonTitle,
             onPressed: _authProvider.authenticating
                 ? null
                 : () async {
@@ -94,9 +95,7 @@ class _FormStateState extends State<_LoginCustomFormState> {
                       // TODO: Conectar a nuestro socket server
                       Navigator.pushReplacementNamed(context, UsersPage.routeName);
                     } else {
-                      // ERROR
-                      // TODO: Alerta de error
-                      showAlert(context, 'Login erroneo', 'Revise los campos');
+                      showAlert(context, Constants.loginErrorTitle, Constants.loginErrorBody);
                     }
                   },
           )

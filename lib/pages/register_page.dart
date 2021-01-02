@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/common/constants.dart';
+import 'package:flutter_chat/common/show_alert.dart';
 import 'package:flutter_chat/pages/login_page.dart';
+import 'package:flutter_chat/pages/users_page.dart';
+import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
 import 'package:flutter_chat/widgets/custom_raised_button.dart';
 import 'package:flutter_chat/widgets/custom_text_field.dart';
 import 'package:flutter_chat/widgets/login_register_feedback.dart';
 import 'package:flutter_chat/widgets/terms_and_conditions.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   static String routeName = 'register_page';
@@ -21,12 +26,12 @@ class RegisterPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomLogo(title: 'Registro',),
+                CustomLogo(title: Constants.registerPageTitle,),
                 _RegisterCustomFormState(),
                 LoginRegisterFeedback(
-                  placeholder: '¿Ya tienes cuenta?',
+                  placeholder: Constants.registerPagePlaceholder,
                   routeToNavigate: LoginPage.routeName,
-                  titleNavigationRoute: 'Ir a login',
+                  titleNavigationRoute: Constants.registerPageNavigationRoute,
                 ),
                 SizedBox(height: 8,),
                 TermsAndConditions()
@@ -51,6 +56,8 @@ class _FormStateState extends State<_RegisterCustomFormState> {
 
   @override
   Widget build(BuildContext context) {
+    final _authProvider = Provider.of<AuthenticationProvider>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -59,28 +66,42 @@ class _FormStateState extends State<_RegisterCustomFormState> {
           CustomTextField(
             icon: Icons.account_circle,
             isPassword: false,
-            placeholder: 'Usuario',
+            placeholder: Constants.userPlaceholder,
             textInputType: TextInputType.text,
             textEditingController: _userTextEditingController,
           ),
           CustomTextField(
             icon: Icons.mail_outline,
             isPassword: false,
-            placeholder: 'Email',
+            placeholder: Constants.emailPlaceholder,
             textInputType: TextInputType.emailAddress,
             textEditingController: _emailTextEditingController,
           ),
           CustomTextField(
             icon: Icons.lock,
             isPassword: true,
-            placeholder: 'Password',
+            placeholder: Constants.passwordPlaceholder,
             textInputType: TextInputType.text,
             textEditingController: _passwordTextEditingController,
           ),
           CustomRaisedButton(
-            placeholder: 'Ingresar',
-            onPressed: () {
-              print('');
+            placeholder: Constants.registerButtonTitle,
+            onPressed: _authProvider.authenticating
+                ? null
+                : () async {
+              FocusScope.of(context).unfocus();
+              final successRegister = await _authProvider.register(
+                  _userTextEditingController.text.trim(),
+                  _emailTextEditingController.text.trim(),
+                  _passwordTextEditingController.text.trim()
+              );
+
+              if (successRegister == true) {
+                // TODO: Conectar a nuestro socket server
+                Navigator.pushReplacementNamed(context, UsersPage.routeName);
+              } else {
+                showAlert(context, Constants.registerErrorTitle, successRegister);
+              }
             },
           )
         ],
