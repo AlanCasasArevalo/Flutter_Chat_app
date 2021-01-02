@@ -1,8 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat/providers/socket_provider.dart';
+import 'package:flutter_chat/common/constants.dart';
+import 'package:flutter_chat/models/user_model.dart';
+import 'package:flutter_chat/providers/chat_provider.dart';
 import 'package:flutter_chat/widgets/chat_message.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +23,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+    final _chatService = Provider.of<ChatProvider>(context);
+    UserModel _userToSendMessage = _chatService.userToSendMessage;
+
     return Scaffold(
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(_userToSendMessage),
         body: Container(
           child: Column(
             children: [
@@ -63,14 +68,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     : _isEditing = false;
               });
             },
-            decoration: InputDecoration.collapsed(hintText: 'Enviar mensaje'),
+            decoration: InputDecoration.collapsed(hintText: Constants.chatPageSendPlaceholder),
             focusNode: _focusNode,
           )),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 5),
             child: Platform.isIOS
                 ? CupertinoButton(
-                    child: Text('Enviar'),
+                    child: Text(Constants.chatPageSendButton),
                     onPressed: _isEditing
                         ? () => _handleSubmit(_textEditingController.text)
                         : null,
@@ -116,14 +121,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     });
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(UserModel userToSendMessage) {
     return AppBar(
       backgroundColor: Colors.white,
       title: Column(
         children: [
           CircleAvatar(
             child: Text(
-              'TE',
+              userToSendMessage.name.substring(0,2),
               style: TextStyle(fontSize: 12),
             ),
             backgroundColor: Colors.blue[100],
@@ -133,7 +138,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             height: 3,
           ),
           Text(
-            'Teresa Eneldo',
+            userToSendMessage.name,
             style: TextStyle(color: Colors.black87, fontSize: 14),
           )
         ],
@@ -145,13 +150,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    final _socketProvider = Provider.of<SocketProvider>(context);
 
     _messages.forEach((chatMessage) {
       chatMessage.animationController.dispose();
     });
 
-    _socketProvider.disconnect();
+    // TODO: off del socket
     super.dispose();
   }
 }

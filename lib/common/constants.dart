@@ -15,4 +15,7 @@ class Constants {
   static String loginPagePlaceholder = '¿No tienes cuenta?';
   static String registerPageNavigationRoute = 'Ir a login';
   static String loginPageNavigationRoute = 'Crea una ahora!!';
+  static String chatPageSendPlaceholder = 'Enviar mensaje';
+  static String chatPageSendButton = 'Enviar';
+
 }
