@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat/models/user.dart';
+import 'package:flutter_chat/models/user_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UsersPage extends StatefulWidget {
@@ -15,11 +15,11 @@ class _UsersPageState extends State<UsersPage> {
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   final users = [
-    User( online: false, email: 'alan@test.com', name: 'alan', uid: '1',),
-    User( online: true, email: 'bibi@test.com', name: 'bibi', uid: '1',),
-    User( online: false, email: 'elsa@test.com', name: 'elsa', uid: '1',),
-    User( online: true, email: 'vega@test.com', name: 'vega', uid: '1',),
-    User( online: false, email: 'mario@test.com', name: 'mario', uid: '1',),
+    UserModel( online: false, email: 'alan@test.com', name: 'alan', uid: '1',),
+    UserModel( online: true, email: 'bibi@test.com', name: 'bibi', uid: '1',),
+    UserModel( online: false, email: 'elsa@test.com', name: 'elsa', uid: '1',),
+    UserModel( online: true, email: 'vega@test.com', name: 'vega', uid: '1',),
+    UserModel( online: false, email: 'mario@test.com', name: 'mario', uid: '1',),
   ];
 
   @override
@@ -64,7 +64,7 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  ListTile _userTile(User user) {
+  ListTile _userTile(UserModel user) {
     return ListTile(
             title: Text(user.name),
             subtitle: Text(user.email),
