@@ -17,7 +17,7 @@ class AuthenticationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     this.authenticating = true;
 
     final loginBody = {'email': email, 'password': password};
@@ -26,10 +26,14 @@ class AuthenticationProvider with ChangeNotifier {
         body: jsonEncode(loginBody),
         headers: {'Content-Type': 'application/json'});
 
+    this.authenticating = false;
     if (response.statusCode > 199 && response.statusCode < 299) {
       final loginResponse = loginModelResponseFromJson(response.body);
       this.user = loginResponse.user;
+      // TODO: Guardar token en algun lado
+      return true;
+    } else {
+      return false;
     }
-    this.authenticating = false;
   }
 }

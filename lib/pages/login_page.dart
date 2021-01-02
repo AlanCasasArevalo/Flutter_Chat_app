@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/common/show_alert.dart';
 import 'package:flutter_chat/pages/register_page.dart';
 import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
@@ -83,10 +84,19 @@ class _FormStateState extends State<_LoginCustomFormState> {
             placeholder: 'Ingresar',
             onPressed: _authProvider.authenticating
                 ? null
-                : () {
+                : () async {
                     FocusScope.of(context).unfocus();
-                    _authProvider.login(_emailTextEditingController.text.trim(),
+                    final successLogin = await _authProvider.login(_emailTextEditingController.text.trim(),
                         _passwordTextEditingController.text.trim());
+
+                    if (successLogin) {
+
+                      // TODO: Navegar a la siguiente pantalla
+                    } else {
+                      // ERROR
+                      // TODO: Alerta de error
+                      showAlert(context, 'Login erroneo', 'Revise los campos');
+                    }
                   },
           )
         ],
