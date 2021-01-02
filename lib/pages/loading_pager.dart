@@ -26,9 +26,6 @@ class LoadingPage extends StatelessWidget {
     final authenticated = await _authProvider.isLoggedIn();
     if (authenticated) {
       // TODO: Conectar al socket
-      /*
-      Las animaciones entre pantallas se puede hacer como este codigo o bien como el del else
-      * */
       Navigator.pushReplacement(
           context,
           PageRouteBuilder(

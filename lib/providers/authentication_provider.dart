@@ -8,9 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthenticationProvider with ChangeNotifier {
-  UserModel user;
+  UserModel userLoggedIn;
   bool _authenticating = false;
   final _storage = new FlutterSecureStorage();
+
+  UserModel get currentUser => this.userLoggedIn;
 
   bool get authenticating => this._authenticating;
 
@@ -43,7 +45,7 @@ class AuthenticationProvider with ChangeNotifier {
     this.authenticating = false;
     if (response.statusCode > 199 && response.statusCode < 299) {
       final loginResponse = loginModelResponseFromJson(response.body);
-      this.user = loginResponse.user;
+      this.userLoggedIn = loginResponse.user;
       await this._saveToken(loginResponse.token);
       return true;
     } else {
@@ -63,7 +65,7 @@ class AuthenticationProvider with ChangeNotifier {
     this.authenticating = false;
     if (response.statusCode > 199 && response.statusCode < 299) {
       final loginResponse = loginModelResponseFromJson(response.body);
-      this.user = loginResponse.user;
+      this.userLoggedIn = loginResponse.user;
       await this._saveToken(loginResponse.token);
       return true;
     } else {
@@ -85,7 +87,7 @@ class AuthenticationProvider with ChangeNotifier {
     this.authenticating = false;
     if (response.statusCode > 199 && response.statusCode < 299) {
       final loginResponse = loginModelResponseFromJson(response.body);
-      this.user = loginResponse.user;
+      this.userLoggedIn = loginResponse.user;
       await this._saveToken(loginResponse.token);
       return true;
     } else {

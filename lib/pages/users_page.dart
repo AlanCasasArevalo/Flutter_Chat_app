@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/models/user_model.dart';
+import 'package:flutter_chat/pages/login_page.dart';
+import 'package:flutter_chat/providers/authentication_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UsersPage extends StatefulWidget {
@@ -10,7 +13,6 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
-
 
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
@@ -24,14 +26,20 @@ class _UsersPageState extends State<UsersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _authProvider = Provider.of<AuthenticationProvider>(context);
+    UserModel userLoggedIn = _authProvider.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi Nombre', style: TextStyle(color: Colors.black54),),
+        title: Text(userLoggedIn.name, style: TextStyle(color: Colors.black54),),
         elevation: 2,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.exit_to_app, color: Colors.black54,),
-          onPressed: (){},
+          onPressed: (){
+            // TODO: Desconectar del socket
+            Navigator.pushReplacementNamed(context, LoginPage.routeName);
+            AuthenticationProvider.deleteToken();
+          },
         ),
         actions: [
           Container(
