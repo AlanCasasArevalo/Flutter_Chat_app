@@ -23,14 +23,18 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomLogo(title: 'Login',),
+                CustomLogo(
+                  title: 'Login',
+                ),
                 _LoginCustomFormState(),
                 LoginRegisterFeedback(
                   placeholder: '¿No tienes cuenta?',
                   routeToNavigate: RegisterPage.routeName,
                   titleNavigationRoute: 'Crea una ahora!!',
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 TermsAndConditions()
               ],
             ),
@@ -47,11 +51,15 @@ class _LoginCustomFormState extends StatefulWidget {
 }
 
 class _FormStateState extends State<_LoginCustomFormState> {
-  final TextEditingController _emailTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _emailTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final _authProvider = Provider.of<AuthenticationProvider>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -73,10 +81,13 @@ class _FormStateState extends State<_LoginCustomFormState> {
           ),
           CustomRaisedButton(
             placeholder: 'Ingresar',
-            onPressed: () {
-              final authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
-              authProvider.login(_emailTextEditingController.text, _passwordTextEditingController.text);
-            },
+            onPressed: _authProvider.authenticating
+                ? null
+                : () {
+                    FocusScope.of(context).unfocus();
+                    _authProvider.login(_emailTextEditingController.text.trim(),
+                        _passwordTextEditingController.text.trim());
+                  },
           )
         ],
       ),

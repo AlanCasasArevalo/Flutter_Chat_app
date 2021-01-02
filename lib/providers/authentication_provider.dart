@@ -7,21 +7,29 @@ import 'package:flutter_chat/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationProvider with ChangeNotifier {
-
   UserModel user;
+  bool _authenticating = false;
+
+  bool get authenticating => this._authenticating;
+
+  set authenticating(bool value) {
+    this._authenticating = value;
+    notifyListeners();
+  }
 
   Future login(String email, String password) async {
+    this.authenticating = true;
+
     final loginBody = {'email': email, 'password': password};
 
     final response = await http.post('${Environments.baseURL}login',
-        body: jsonEncode(loginBody), headers: {
-          'Content-Type': 'application/json'
-        });
+        body: jsonEncode(loginBody),
+        headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode > 199 && response.statusCode < 299) {
       final loginResponse = loginModelResponseFromJson(response.body);
       this.user = loginResponse.user;
-    }  
-    print(response);
+    }
+    this.authenticating = false;
   }
 }
