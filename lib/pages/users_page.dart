@@ -3,6 +3,7 @@ import 'package:flutter_chat/models/user_model.dart';
 import 'package:flutter_chat/pages/login_page.dart';
 import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/providers/socket_provider.dart';
+import 'package:flutter_chat/providers/users_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -14,16 +15,16 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
-
+  final _usersProvider = new UsersProvider();
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
-  final users = [
-    UserModel( online: false, email: 'alan@test.com', name: 'alan', uid: '1',),
-    UserModel( online: true, email: 'bibi@test.com', name: 'bibi', uid: '1',),
-    UserModel( online: false, email: 'elsa@test.com', name: 'elsa', uid: '1',),
-    UserModel( online: true, email: 'vega@test.com', name: 'vega', uid: '1',),
-    UserModel( online: false, email: 'mario@test.com', name: 'mario', uid: '1',),
-  ];
+  List<UserModel> users = [];
+
+  @override
+  void initState() {
+    this._onRefresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,8 @@ class _UsersPageState extends State<UsersPage> {
   }
 
   _onRefresh() async {
-    await Future.delayed(Duration(milliseconds: 1000));
+    this.users = await _usersProvider.getUsers();
+    setState(() {});
     _refreshController.refreshCompleted();
   }
 }
