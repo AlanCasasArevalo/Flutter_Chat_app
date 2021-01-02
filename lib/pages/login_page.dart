@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/common/show_alert.dart';
 import 'package:flutter_chat/pages/register_page.dart';
+import 'package:flutter_chat/pages/users_page.dart';
 import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
 import 'package:flutter_chat/widgets/custom_raised_button.dart';
@@ -90,8 +91,8 @@ class _FormStateState extends State<_LoginCustomFormState> {
                         _passwordTextEditingController.text.trim());
 
                     if (successLogin) {
-
-                      // TODO: Navegar a la siguiente pantalla
+                      // TODO: Conectar a nuestro socket server
+                      Navigator.pushReplacementNamed(context, UsersPage.routeName);
                     } else {
                       // ERROR
                       // TODO: Alerta de error
