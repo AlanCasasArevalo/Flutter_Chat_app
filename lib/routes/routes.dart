@@ -22,5 +22,5 @@ MaterialPageRoute<dynamic> Function(RouteSettings) getDefaultRouteApplications()
 }
 
 final defaultRoute = (RouteSettings settings) =>
-    MaterialPageRoute(builder: (BuildContext context) => RegisterPage()
+    MaterialPageRoute(builder: (BuildContext context) => LoadingPage()
 );

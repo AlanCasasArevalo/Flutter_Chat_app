@@ -74,6 +74,26 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> isLoggedIn() async {
+    final token = await this._storage.read(key: Environments.tokenKey);
+    final response = await http.get('${Environments.baseURL}login/refresh_token',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-token': token
+        });
+
+    this.authenticating = false;
+    if (response.statusCode > 199 && response.statusCode < 299) {
+      final loginResponse = loginModelResponseFromJson(response.body);
+      this.user = loginResponse.user;
+      await this._saveToken(loginResponse.token);
+      return true;
+    } else {
+      this._logout();
+      return false;
+    }
+  }
+
   Future _saveToken(String token) async {
     return await _storage.write(key: Environments.tokenKey, value: token);
   }
