@@ -22,5 +22,5 @@ MaterialPageRoute<dynamic> Function(RouteSettings) getDefaultRouteApplications()
 }
 
 final defaultRoute = (RouteSettings settings) =>
-    MaterialPageRoute(builder: (BuildContext context) => ChatPage()
+    MaterialPageRoute(builder: (BuildContext context) => LoginPage()
 );

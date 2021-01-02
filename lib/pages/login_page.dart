@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/pages/register_page.dart';
+import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/widgets/custom_logo.dart';
 import 'package:flutter_chat/widgets/custom_raised_button.dart';
 import 'package:flutter_chat/widgets/custom_text_field.dart';
 import 'package:flutter_chat/widgets/login_register_feedback.dart';
 import 'package:flutter_chat/widgets/terms_and_conditions.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   static String routeName = 'login_page';
@@ -72,7 +74,8 @@ class _FormStateState extends State<_LoginCustomFormState> {
           CustomRaisedButton(
             placeholder: 'Ingresar',
             onPressed: () {
-              print('');
+              final authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+              authProvider.login(_emailTextEditingController.text, _passwordTextEditingController.text);
             },
           )
         ],
