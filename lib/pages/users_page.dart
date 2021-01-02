@@ -48,7 +48,7 @@ class _UsersPageState extends State<UsersPage> {
         actions: [
           Container(
             margin: EdgeInsets.only(right: 10),
-            child: Icon(Icons.check_circle, color: Colors.green[400],),
+            child: _getIcon(_socketProvider.serverStatus)
           )
         ],
       ),
@@ -76,6 +76,21 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
+  Icon _getIcon(ServerStatus status) {
+    if (status == ServerStatus.Online) {
+      return Icon(Icons.check_circle, color: Colors.green[400],);
+    } else if (status == ServerStatus.Offline) {
+      return Icon(
+        Icons.offline_bolt,
+        color: Colors.red,
+      );
+    } else {
+      return Icon(
+        Icons.refresh,
+        color: Colors.grey,
+      );
+    }
+  }
   ListTile _userTile(UserModel user) {
     return ListTile(
             title: Text(user.name),
