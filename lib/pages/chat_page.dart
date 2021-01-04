@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/common/constants.dart';
 import 'package:flutter_chat/models/user_model.dart';
+import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/providers/chat_provider.dart';
+import 'package:flutter_chat/providers/socket_provider.dart';
 import 'package:flutter_chat/widgets/chat_message.dart';
 import 'package:provider/provider.dart';
 
@@ -18,13 +20,23 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
+  ChatProvider _chatService;
+  SocketProvider _socketProvider;
+  AuthenticationProvider _authenticationProvider;
 
   List<ChatMessage> _messages = [];
 
   @override
+  void initState() {
+    this._chatService = Provider.of<ChatProvider>(context, listen: false);
+    this._socketProvider = Provider.of<SocketProvider>(context, listen: false);
+    this._authenticationProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    final _chatService = Provider.of<ChatProvider>(context);
     UserModel _userToSendMessage = _chatService.userToSendMessage;
 
     return Scaffold(
@@ -100,8 +112,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     ));
   }
 
-  _handleSubmit(String value) {
-    if (value.trim().isEmpty) {
+  _handleSubmit(String message) {
+    if (message.trim().isEmpty) {
       return;
     }
 
@@ -110,7 +122,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
     final newMessage = ChatMessage(
       uid: '123',
-      message: value,
+      message: message,
       animationController: AnimationController(vsync: this, duration: Duration(milliseconds: 400)),
     );
     _messages.insert(0, newMessage);
@@ -118,6 +130,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
     setState(() {
       _isEditing = false;
+    });
+
+    this._socketProvider.emit('personal_message', {
+      'from': this._authenticationProvider.currentUser.uid,
+      'to': this._chatService.userToSendMessage.uid,
+      'message': message
     });
   }
 
