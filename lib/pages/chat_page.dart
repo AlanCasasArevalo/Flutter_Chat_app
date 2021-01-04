@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/common/constants.dart';
+import 'package:flutter_chat/models/history_chat_response.dart';
 import 'package:flutter_chat/models/user_model.dart';
 import 'package:flutter_chat/providers/authentication_provider.dart';
 import 'package:flutter_chat/providers/chat_provider.dart';
@@ -20,7 +21,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
-  ChatProvider _chatService;
+  ChatProvider _chatProvider;
   SocketProvider _socketProvider;
   AuthenticationProvider _authenticationProvider;
 
@@ -28,11 +29,26 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    this._chatService = Provider.of<ChatProvider>(context, listen: false);
+    super.initState();
+    this._chatProvider = Provider.of<ChatProvider>(context, listen: false);
     this._socketProvider = Provider.of<SocketProvider>(context, listen: false);
     this._authenticationProvider = Provider.of<AuthenticationProvider>(context, listen: false);
     this._socketProvider.socket.on('personal_message', _listenMessages);
-    super.initState();
+    _loadChatHistory(this._chatProvider.userToSendMessage.uid);
+  }
+
+  _loadChatHistory(String userToSendMessageUID) async {
+    List<Message> historyChat = await this._chatProvider.getHistoryChat(userToSendMessageUID);
+
+    final historyChatMessages = historyChat.map((message) => new ChatMessage(
+        uid: message.from,
+        message: message.message,
+        animationController: AnimationController(duration: Duration(milliseconds: 0), vsync: this)..forward()
+    ));
+
+    setState(() {
+      _messages.insertAll(0, historyChatMessages);
+    });
   }
 
   void _listenMessages (dynamic payload) {
@@ -52,7 +68,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    UserModel _userToSendMessage = _chatService.userToSendMessage;
+    UserModel _userToSendMessage = _chatProvider.userToSendMessage;
 
     return Scaffold(
         appBar: _buildAppBar(_userToSendMessage),
@@ -136,7 +152,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     _textEditingController.clear();
 
     final newMessage = ChatMessage(
-      uid: '123',
+      uid: _authenticationProvider.userLoggedIn.uid,
       message: message,
       animationController: AnimationController(vsync: this, duration: Duration(milliseconds: 400)),
     );
@@ -149,7 +165,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
     this._socketProvider.emit('personal_message', {
       'from': this._authenticationProvider.currentUser.uid,
-      'to': this._chatService.userToSendMessage.uid,
+      'to': this._chatProvider.userToSendMessage.uid,
       'message': message
     });
   }
